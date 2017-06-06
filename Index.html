@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>HexGrid Canvas</title>
+    <meta charset="utf-8" />
+
+    <!-- Load style sheet -->
+   <link href="index.css" media="screen" rel="stylesheet" type="text/css"> 
+    <!--   <script type="text/javascript" src="client.js"></script> -->
+</head>
+
+<body>
+    <canvas id="viewport" width="600" height="450" >
+    This browser does not support HTML5 Canvas.
+    </canvas>
+
+    <script>
+    var canvas;
+	var ctx;
+	var dx = 5;
+	var dy = 5;
+	var dz = 0.1;
+	var xCam = 300;
+	var yCam = 225;
+	var zoom = 2;
+	var WIDTH =  600;
+	var HEIGHT = 450;
+	var rotation = 0;
+	
+	function clearCanvas() {
+		ctx.clearRect(0, 0, WIDTH, HEIGHT);
+	}
+
+	function circle(x,y,r) {
+		ctx.beginPath();
+		ctx.arc(x, y, r, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.stroke();
+	}
+
+	function rect(x,y,w,h) {
+		ctx.beginPath();
+		ctx.rect(x,y,w,h);
+		ctx.closePath();
+		ctx.fill();
+		ctx.stroke();
+	}
+
+	function hexagon(x,y,s) {
+  		ctx.beginPath();
+        ctx.moveTo(hexCornerX(x,0,s), hexCornerY(y,0,s));
+        ctx.lineTo(hexCornerX(x,1,s), hexCornerY(y,1,s));
+        ctx.lineTo(hexCornerX(x,2,s), hexCornerY(y,2,s));
+        ctx.lineTo(hexCornerX(x,3,s), hexCornerY(y,3,s));
+        ctx.lineTo(hexCornerX(x,4,s), hexCornerY(y,4,s));
+        ctx.lineTo(hexCornerX(x,5,s), hexCornerY(y,5,s));
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+	function init() {
+		canvas = document.getElementById("viewport");
+		ctx = canvas.getContext("2d");
+		return setInterval(draw, 10);
+	}
+
+	function doKeyDown(evt){
+		switch (evt.keyCode) {
+			case 87:  /* W was pressed */
+			if (yCam - dy > -500) {
+				yCam -= dy;
+			}
+			break;
+
+			case 83:  /* S was pressed */
+			if (yCam + dy < HEIGHT + 500) {
+				yCam += dy;
+			}
+			break;
+
+			case 65:  /* A was pressed */
+			if (xCam - dx > -500) {
+				xCam -= dx;
+			}
+			break;
+
+			case 68:  /* D was pressed */
+			if (xCam + dx < WIDTH  + 500) {
+				xCam += dx;
+			}
+			break;
+
+			case 90:  /* Z was pressed */
+			if (zoom >= 0.5) {
+				zoom -= dz;
+			}
+			break;
+
+			case 88:  /* X was pressed */
+			if (zoom <= 25) {
+				zoom += dz;
+			}
+			break;
+
+			case 81:  /* Q was pressed */
+			if (true) {
+				rotation += 1;
+			}
+			break;
+
+			case 69:  /* E was pressed */
+			if (true) {
+				rotation -= 1;
+			}
+			break;
+		}
+	}
+
+	function hexCornerX(cx,i,s) {
+        var angle_deg = 60 * i + 30 + rotation;
+        var angle_rad = Math.PI / 180 * angle_deg;
+        return (cx + s * Math.cos(angle_rad));    
+    }
+    
+    function hexCornerY(cy,i,s) {
+        var angle_deg = 60 * i + 30 + rotation;
+        var angle_rad = Math.PI / 180 * angle_deg;
+        return (cy + s * Math.sin(angle_rad));    
+    }
+
+	function draw() {
+		clearCanvas();
+		ctx.fillStyle = "white";
+		ctx.strokeStyle = "black";
+		rect(0,0,WIDTH,HEIGHT);
+
+		ctx.fillStyle = "purple";
+		circle(0 + xCam, 0 + yCam, 10 * zoom);
+
+		ctx.fillStyle = "purple";
+		hexagon(0 + xCam, 0 + yCam, 30 * zoom);
+	}
+	init();
+	window.addEventListener('keydown',doKeyDown,true);
+    </script>
+</body>
+</html>
