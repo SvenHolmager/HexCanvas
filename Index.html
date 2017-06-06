@@ -21,13 +21,25 @@
 	var dx = 5;
 	var dy = 5;
 	var dz = 0.1;
-	var xCam = 300;
-	var yCam = 225;
+	var dr = 30;
+	var xCam = 0;
+	var yCam = 0;
 	var zoom = 2;
 	var WIDTH =  600;
 	var HEIGHT = 450;
 	var rotation = 0;
+	var boardSizeX = 6;
+	var boardSizeY = 6;
+	var Fields = [];
 	
+ 	var Field = (function () {
+        function Field(x, y) {
+            this.Xpos = x;
+            this.Ypos = y;
+        }
+        return Field;
+    }());
+
 	function clearCanvas() {
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	}
@@ -73,7 +85,8 @@
 			}
 			break;
 
-			case 83:  /* S was pressed */
+ 			/* S was pressed */
+			case 83:
 			if (yCam + dy < HEIGHT + 500) {
 				yCam += dy;
 			}
@@ -105,13 +118,13 @@
 
 			case 81:  /* Q was pressed */
 			if (true) {
-				rotation += 1;
+				rotation += dr;
 			}
 			break;
 
 			case 69:  /* E was pressed */
 			if (true) {
-				rotation -= 1;
+				rotation -= dr;
 			}
 			break;
 		}
@@ -122,7 +135,7 @@
         var angle_rad = Math.PI / 180 * angle_deg;
         return (cx + s * Math.cos(angle_rad));    
     }
-    
+
     function hexCornerY(cy,i,s) {
         var angle_deg = 60 * i + 30 + rotation;
         var angle_rad = Math.PI / 180 * angle_deg;
@@ -136,13 +149,50 @@
 		rect(0,0,WIDTH,HEIGHT);
 
 		ctx.fillStyle = "purple";
-		circle(0 + xCam, 0 + yCam, 10 * zoom);
-
-		ctx.fillStyle = "purple";
-		hexagon(0 + xCam, 0 + yCam, 30 * zoom);
+		showCamera();
+		showCoords();
+		drawBoardFields();
 	}
+
+	function showCamera() {
+		ctx.fillStyle = "purple";
+		circle(WIDTH/2, HEIGHT/2, 2);
+	}
+
+	function showCoords() {
+		ctx.stroke();
+        ctx.fillStyle = "#000000";
+        ctx.font = "10pt Arial";
+        ctx.fillText(xCam + "," + yCam, WIDTH/2,  HEIGHT/2+20);
+	}
+
+	function drawBoardFields() {
+		var size = 24 * zoom;
+		var hexHeight = 2 * size;
+		var hexWidth = Math.sqrt(3)/2 * hexHeight;
+		var vertDist = hexHeight * 3/4;
+
+		for (var i = 0; i < boardSizeX; i++) {
+			for (var j = 0; j < boardSizeY; j++) {
+				var hexPosX = xCam + i * hexWidth + (j % 2) * 0.5*hexWidth;
+				var hexPosY = yCam + j * vertDist;
+ 				
+				hexagon(hexPosX, hexPosY, size);
+			}
+		}
+	}
+
 	init();
+
 	window.addEventListener('keydown',doKeyDown,true);
+
+	for (var x = 0; x < boardSizeX; ++x) {
+        Fields[x] = [];
+        for (var y = 0; y < boardSizeY; ++y) {
+            Fields[x][y] = new Field(x, y);
+        }
+    }
+
     </script>
 </body>
 </html>
