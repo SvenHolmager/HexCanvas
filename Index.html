@@ -43,14 +43,12 @@
 	function clearCanvas() {
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	}
-
 	function circle(x,y,r) {
 		ctx.beginPath();
 		ctx.arc(x, y, r, 0, Math.PI*2, true);
 		ctx.fill();
 		ctx.stroke();
 	}
-
 	function rect(x,y,w,h) {
 		ctx.beginPath();
 		ctx.rect(x,y,w,h);
@@ -58,7 +56,6 @@
 		ctx.fill();
 		ctx.stroke();
 	}
-
 	function hexagon(x,y,s) {
   		ctx.beginPath();
         ctx.moveTo(hexCornerX(x,0,s), hexCornerY(y,0,s));
@@ -70,78 +67,50 @@
         ctx.closePath();
         ctx.stroke();
     }
-
 	function init() {
 		canvas = document.getElementById("viewport");
 		ctx = canvas.getContext("2d");
 		return setInterval(draw, 10);
 	}
-
 	function doKeyDown(evt){
 		switch (evt.keyCode) {
-			case 87:  /* W was pressed */
-			if (yCam - dy > -500) {
-				yCam -= dy;
-			}
-			break;
+
+			/* W was pressed */
+			case 87: if (yCam - dy > -500) { yCam -= dy; } break;
 
  			/* S was pressed */
-			case 83:
-			if (yCam + dy < HEIGHT + 500) {
-				yCam += dy;
-			}
-			break;
+			case 83: if (yCam + dy < HEIGHT + 500) { yCam += dy; } break;
 
-			case 65:  /* A was pressed */
-			if (xCam - dx > -500) {
-				xCam -= dx;
-			}
-			break;
+			/* A was pressed */
+			case 65: if (xCam - dx > -500) { xCam -= dx; } break;
 
-			case 68:  /* D was pressed */
-			if (xCam + dx < WIDTH  + 500) {
-				xCam += dx;
-			}
-			break;
+			/* D was pressed */	
+			case 68: if (xCam + dx < WIDTH  + 500) { xCam += dx; } break;
 
-			case 90:  /* Z was pressed */
-			if (zoom >= 0.5) {
-				zoom -= dz;
-			}
-			break;
+ 			/* Z was pressed */
+			case 90: if (zoom >= 0.5) {zoom -= dz; } break;
 
-			case 88:  /* X was pressed */
-			if (zoom <= 25) {
-				zoom += dz;
-			}
-			break;
+			/* X was pressed */
+			case 88: if (zoom <= 25) { zoom += dz; } break;
 
-			case 81:  /* Q was pressed */
-			if (true) {
-				rotation += dr;
-			}
-			break;
+ 			/* Q was pressed */
+			case 81:  if (true) { rotation += dr; } break;
 
-			case 69:  /* E was pressed */
-			if (true) {
-				rotation -= dr;
-			}
-			break;
+			/* E was pressed */
+			case 69: if (true) { rotation -= dr; } break;
 		}
 	}
-
 	function hexCornerX(cx,i,s) {
         var angle_deg = 60 * i + 30 + rotation;
         var angle_rad = Math.PI / 180 * angle_deg;
         return (cx + s * Math.cos(angle_rad));    
     }
-
     function hexCornerY(cy,i,s) {
         var angle_deg = 60 * i + 30 + rotation;
         var angle_rad = Math.PI / 180 * angle_deg;
         return (cy + s * Math.sin(angle_rad));    
     }
-
+    
 	function draw() {
 		clearCanvas();
 		ctx.fillStyle = "white";
