@@ -71,7 +71,7 @@ var game_core = function() {
 			case 68: if (xCam + dPosition < WIDTH  + 500) { xCam += dPosition; } break;
 
  			/* Z was pressed */
-			case 90: if (zoom >= 0.5) {zoom -= dZoom; } break;
+			case 90: if (zoom >= 1) {zoom -= dZoom; } break;
 
 			/* X was pressed */
 			case 88: if (zoom <= 25) { zoom += dZoom; } break;
