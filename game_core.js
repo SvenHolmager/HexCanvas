@@ -6,20 +6,21 @@ var game_core = function() {
 	var dPosition = 5;
 	var dZoom = 0.1;
 	var dRotation = 30;
-	var xCam = 0;
-	var yCam = 0;
+	var xCam = 200;
+	var yCam = 200;
 	var zoom = 2;
-	var WIDTH =  600;
-	var HEIGHT = 450;
+	var WIDTH =  800;
+	var HEIGHT = 600;
 	var rotation = 0;
-	var boardSizeX = 6;
-	var boardSizeY = 6;
+	var boardSizeX = 15;
+	var boardSizeY = 17;
 	var Fields = [];
 	
  	var Field = (function () {
-        function Field(x, y) {
+        function Field(x, y, color) {
             this.Xpos = x;
             this.Ypos = y;
+            this.Color = color;
         }
         return Field;
     }());
@@ -51,11 +52,23 @@ var game_core = function() {
         ctx.closePath();
         ctx.stroke();
     }
+    function hexCornerX(cx,i,s) {
+        var angle_deg = 60 * i + 30 + rotation;
+        var angle_rad = Math.PI / 180 * angle_deg;
+        return (cx + s * Math.cos(angle_rad));    
+    }
+    function hexCornerY(cy,i,s) {
+        var angle_deg = 60 * i + 30 + rotation;
+        var angle_rad = Math.PI / 180 * angle_deg;
+        return (cy + s * Math.sin(angle_rad));    
+    }
+
 	function init() {
 		canvas = document.getElementById("viewport");
 		ctx = canvas.getContext("2d");
 		return setInterval(draw, 10);
 	}
+
 	function doKeyDown(evt){
 		switch (evt.keyCode) {
 			/* W was pressed */
@@ -84,20 +97,9 @@ var game_core = function() {
 		}
 	}
 
-	function hexCornerX(cx,i,s) {
-        var angle_deg = 60 * i + 30 + rotation;
-        var angle_rad = Math.PI / 180 * angle_deg;
-        return (cx + s * Math.cos(angle_rad));    
-    }
-    function hexCornerY(cy,i,s) {
-        var angle_deg = 60 * i + 30 + rotation;
-        var angle_rad = Math.PI / 180 * angle_deg;
-        return (cy + s * Math.sin(angle_rad));    
-    }
-    
 	function draw() {
 		clearCanvas();
-		ctx.fillStyle = "white";
+		ctx.fillStyle = "lightgrey";
 		ctx.strokeStyle = "black";
 		rect(0,0,WIDTH,HEIGHT);
 
@@ -120,7 +122,7 @@ var game_core = function() {
 	}
 
 	function drawBoardFields() {
-		var size = 24 * zoom;
+		var size = 8 * zoom;
 		var hexHeight = 2 * size;
 		var hexWidth = Math.sqrt(3)/2 * hexHeight;
 		var vertDist = hexHeight * 3/4;
