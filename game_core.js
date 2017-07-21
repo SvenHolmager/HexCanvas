@@ -10,8 +10,9 @@ var game_core = function() {
 	var WIDTH =  800;
 	var HEIGHT = 600;
 	var rotation = 0;
-	var boardSizeX = 10;
-	var boardSizeY = 10;
+	var boardSizeX = 20;
+	var boardSizeY = 20;
+	var viewDistance = 250;
 	var Fields = [];
 
 	function clearCanvas() {
@@ -69,7 +70,7 @@ var game_core = function() {
         ctx.stroke();
         ctx.fillStyle = "#000000";
         ctx.font = "10pt Arial";
-        ctx.fillText("Move around on: WASDZX ", 5, 65);
+        ctx.fillText("Move around on: WASDZXQE ", 5, 65);
     }
 
 	function showCoords() {
@@ -94,16 +95,16 @@ var game_core = function() {
 			case 87: if (camera.Ypos >= 0) { camera.Ypos -= dPosition; } break;
 
  			/* S was pressed */
-			case 83: if (camera.Ypos <= 440) { camera.Ypos += dPosition; } break;
+			case 83: if (camera.Ypos <= 880) { camera.Ypos += dPosition; } break;
 
 			/* A was pressed */
 			case 65: if (camera.Xpos >= 0) { camera.Xpos -= dPosition; } break;
 
 			/* D was pressed */	
-			case 68: if (camera.Xpos <= 560) { camera.Xpos += dPosition; } break;
+			case 68: if (camera.Xpos <= 1100) { camera.Xpos += dPosition; } break;
 
  			/* Z was pressed */
-			case 90: if (zoom >= 1) {zoom -= dZoom; } break;
+			case 90: if (zoom >= 0.7) {zoom -= dZoom; } break;
 
 			/* X was pressed */
 			case 88: if (zoom <= 25) { zoom += dZoom; } break;
@@ -154,12 +155,15 @@ var game_core = function() {
     Field.prototype.draw = function () {
 		var hexPosX = ((((this.Xpos * this.hexWidth) + (this.Ypos % 2) * 0.5 * this.hexWidth - camera.Xpos)*zoom)+WIDTH/2);
 		var hexPosY = (((this.Ypos * this.vertDist - camera.Ypos)*zoom) + HEIGHT/2);
-		var var1 = Math.pow(WIDTH / 2 - hexPosX, 2);
-		var var2 = Math.pow((HEIGHT / 2 - hexPosY), 2);
-		var distanceFromCenter = Math.sqrt(var1 + var2);
+		var w1 = Math.pow(WIDTH / 2 - hexPosX, 2);
+		var h1 = Math.pow((HEIGHT / 2 - hexPosY), 2);
+		var distanceFromCenter = Math.sqrt(w1 + h1);
+		if (distanceFromCenter / zoom <= viewDistance) {
+		//	var v1 = Math.acos((WIDTH / 2 - hexPosX) / distanceFromCenter);
+		//	var b = Math.cos(v1 + rotation * Math.PI) * distanceFromCenter+ WIDTH / 2;
+		//	var a = Math.sin(v1 + rotation * Math.PI ) * distanceFromCenter + HEIGHT / 2;
 
-		if (distanceFromCenter <= 200) {
-			this.drawHexagon(hexPosX, hexPosY, this.size, this.Color);
+			this.drawHexagon(hexPosX , hexPosY, this.size, this.Color);
         	this.drawHexagonData(hexPosX, hexPosY);
         }
     };
