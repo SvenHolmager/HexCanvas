@@ -1,9 +1,9 @@
 var game_core = function() {
 
 	//Delta Values
-	var dPosition = 5;
+	var dPosition = 2;
 	var dZoom = 0.1;
-	var dRotation = 30;
+	var dRotation = 3;
 
 	//Game properties
 	var zoom = 1;
@@ -44,30 +44,32 @@ var game_core = function() {
 		clearCanvas();
 		ctx.fillStyle = "lightgrey"; // background color
 		rect(0,0,WIDTH,HEIGHT); // background color painting.
-
 		drawBoardFields();  //draws fields on the map
-
 		camera.draw(); // draws camera in middle of canvas
 		showCoords(); // draws camera game pos 
 		drawDevData();	//draws data on upper left side of canvas
-
 	};
 
     function drawDevData() {
         ctx.stroke();
         ctx.fillStyle = "#000000";
         ctx.font = "10pt Arial";
-        ctx.fillText("Data", 5, 20);
+        ctx.fillText("CamWorldPosX: " + camera.Xpos, 5, 20);
 
         ctx.stroke();
         ctx.fillStyle = "#000000";
         ctx.font = "10pt Arial";
-        ctx.fillText("CamCPosY:", 5, 35);
+        ctx.fillText("CamWorldPosY: " + camera.Ypos, 5, 35);
         
         ctx.stroke();
         ctx.fillStyle = "#000000";
         ctx.font = "10pt Arial";
         ctx.fillText("Zoom: " + zoom, 5, 50);
+
+        ctx.stroke();
+        ctx.fillStyle = "#000000";
+        ctx.font = "10pt Arial";
+        ctx.fillText("Move around on: WASDZX ", 5, 65);
     }
 
 	function showCoords() {
@@ -89,16 +91,16 @@ var game_core = function() {
 	function doKeyDown(evt){
 		switch (evt.keyCode) {
 			/* W was pressed */
-			case 87: if (true) { camera.Ypos -= dPosition; } break;
+			case 87: if (camera.Ypos >= 0) { camera.Ypos -= dPosition; } break;
 
  			/* S was pressed */
-			case 83: if (true) { camera.Ypos += dPosition; } break;
+			case 83: if (camera.Ypos <= 440) { camera.Ypos += dPosition; } break;
 
 			/* A was pressed */
-			case 65: if (true) { camera.Xpos -= dPosition; } break;
+			case 65: if (camera.Xpos >= 0) { camera.Xpos -= dPosition; } break;
 
 			/* D was pressed */	
-			case 68: if (true) { camera.Xpos += dPosition; } break;
+			case 68: if (camera.Xpos <= 560) { camera.Xpos += dPosition; } break;
 
  			/* Z was pressed */
 			case 90: if (zoom >= 1) {zoom -= dZoom; } break;
@@ -107,13 +109,12 @@ var game_core = function() {
 			case 88: if (zoom <= 25) { zoom += dZoom; } break;
 
  			/* Q was pressed */
-			case 81:  if (true) { } break;
+			case 81:  if (true) { rotation -= dRotation} break;
 
 			/* E was pressed */
-			case 69: if (true) { } break;
+			case 69: if (true) { rotation += dRotation } break;
 		}
 	};
-
 
 	init();
 
@@ -151,10 +152,16 @@ var game_core = function() {
     };
 
     Field.prototype.draw = function () {
-    	var secondspacing = (this.Ypos % 2) * 0.5 * this.hexWidth;
-		var hexPosX = (((this.Xpos * this.hexWidth) + secondspacing - camera.Xpos)*zoom)+WIDTH/2;
-		var hexPosY = ((this.Ypos * this.vertDist - camera.Ypos)*zoom) + HEIGHT/2;
-		this.drawHexagon(hexPosX, hexPosY, this.size, this.Color);
+		var hexPosX = ((((this.Xpos * this.hexWidth) + (this.Ypos % 2) * 0.5 * this.hexWidth - camera.Xpos)*zoom)+WIDTH/2);
+		var hexPosY = (((this.Ypos * this.vertDist - camera.Ypos)*zoom) + HEIGHT/2);
+		var var1 = Math.pow(WIDTH / 2 - hexPosX, 2);
+		var var2 = Math.pow((HEIGHT / 2 - hexPosY), 2);
+		var distanceFromCenter = Math.sqrt(var1 + var2);
+
+		if (distanceFromCenter <= 200) {
+			this.drawHexagon(hexPosX, hexPosY, this.size, this.Color);
+        	this.drawHexagonData(hexPosX, hexPosY);
+        }
     };
 
     Field.prototype.drawHexagon = function(x,y,s,color) {
@@ -169,6 +176,13 @@ var game_core = function() {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
+    };
+
+    Field.prototype.drawHexagonData = function(x, y) {
+    	ctx.stroke();
+        ctx.fillStyle = "#000000";
+        ctx.font = "10pt Arial";
+        ctx.fillText(this.Xpos + "," + this.Ypos, x-10, y+5);
     };
 
     Field.prototype.hexCornerX = function(cx,i,s) {
@@ -186,8 +200,8 @@ var game_core = function() {
 //Camera class and functions
 	var Camera = (function () {
         function Camera() {
-            this.Xpos = 0;
-            this.Ypos = 0;
+            this.Xpos = 220;
+            this.Ypos = 200;
             this.Color = "red";
         }
         return Camera;
