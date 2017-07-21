@@ -89,16 +89,16 @@ var game_core = function() {
 	function doKeyDown(evt){
 		switch (evt.keyCode) {
 			/* W was pressed */
-			case 87: if (true) { camera.Ypos -= dPosition / zoom; } break;
+			case 87: if (true) { camera.Ypos -= dPosition; } break;
 
  			/* S was pressed */
-			case 83: if (true) { camera.Ypos += dPosition/ zoom; } break;
+			case 83: if (true) { camera.Ypos += dPosition; } break;
 
 			/* A was pressed */
-			case 65: if (true) { camera.Xpos -= dPosition/ zoom; } break;
+			case 65: if (true) { camera.Xpos -= dPosition; } break;
 
 			/* D was pressed */	
-			case 68: if (true) { camera.Xpos += dPosition/ zoom; } break;
+			case 68: if (true) { camera.Xpos += dPosition; } break;
 
  			/* Z was pressed */
 			case 90: if (zoom >= 1) {zoom -= dZoom; } break;
