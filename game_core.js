@@ -12,7 +12,7 @@ var game_core = function() {
 	var rotation = 0;
 	var boardSizeX = 20;
 	var boardSizeY = 20;
-	var viewDistance = 250;
+	var viewDistance = 150;
 	var Fields = [];
 
 	function clearCanvas() {
@@ -117,16 +117,21 @@ var game_core = function() {
 		}
 	};
 
+	function onClick(evt) {
+		alert("Hello World");
+	}
+
 	init();
 
 	window.addEventListener('keydown',doKeyDown,true);
+	window.addEventListener('onClick', onClick, true);
 
  	var Field = (function () {
         function Field(x, y, color) {
             this.Xpos = x;
             this.Ypos = y;
             this.Color = color;
-            this.size = 32 * zoom;
+            this.size = 16 * zoom;
 		 	this.hexHeight = 2 * this.size;
 		 	this.hexWidth = Math.sqrt(3)/2 * this.hexHeight;
 			this.vertDist = this.hexHeight * 3/4;
@@ -138,32 +143,36 @@ var game_core = function() {
         Fields[x] = [];
         for (var y = 0; y < boardSizeY; ++y) {
         	if ((y % 2) == 0 && (x % 2) == 0) {
-            	Fields[x][y] = new Field(x, y, "green");
+            	Fields[x][y] = new Field(x, y, "yellow");
         	}
         	if ((y % 2) == 0 && (x % 2) == 1) {
-            	Fields[x][y] = new Field(x, y, "blue");
+            	Fields[x][y] = new Field(x, y, "orange");
         	} 
         	if ((y % 2) == 1 && (x % 2) == 0) {
-        		Fields[x][y] = new Field(x, y, "green");
+        		Fields[x][y] = new Field(x, y, "yellow");
         	}
         	if ((y % 2) == 1 && (x % 2) == 1) {
-        		Fields[x][y] = new Field(x, y, "green");
+        		Fields[x][y] = new Field(x, y, "orange");
         	}
         }
     };
 
     Field.prototype.draw = function () {
 		var hexPosX = ((((this.Xpos * this.hexWidth) + (this.Ypos % 2) * 0.5 * this.hexWidth - camera.Xpos)*zoom)+WIDTH/2);
-		var hexPosY = (((this.Ypos * this.vertDist - camera.Ypos)*zoom) + HEIGHT/2);
-		var w1 = Math.pow(WIDTH / 2 - hexPosX, 2);
-		var h1 = Math.pow((HEIGHT / 2 - hexPosY), 2);
-		var distanceFromCenter = Math.sqrt(w1 + h1);
-		if (distanceFromCenter / zoom <= viewDistance) {
-		//	var v1 = Math.acos((WIDTH / 2 - hexPosX) / distanceFromCenter);
-		//	var b = Math.cos(v1 + rotation * Math.PI) * distanceFromCenter+ WIDTH / 2;
-		//	var a = Math.sin(v1 + rotation * Math.PI ) * distanceFromCenter + HEIGHT / 2;
+		var hexPosY = (((this.Ypos * this.vertDist - camera.Ypos) * zoom) + HEIGHT/2);
+		var a = WIDTH / 2 - hexPosX;
+		var b = HEIGHT / 2 - hexPosY;
+		var c = Math.sqrt(Math.pow(b, 2) + Math.pow(a, 2));
+		var ang = Math.asin(a / c);
+		var angle_radian = Math.sin(ang) / Math.PI * 180;
+		if (c / zoom <= viewDistance) {
 
-			this.drawHexagon(hexPosX , hexPosY, this.size, this.Color);
+		//	var x1 = hexPosX*Math.cos(rotation) - hexPosY*Math.sin(rotation);
+		//	var y1 = hexPosX*Math.sin(rotation) + hexPosY*Math.cos(rotation);
+		//	var b = x1 + WIDTH/2 + camera.Xpos;
+		//	var a = y1 + HEIGHT/2 + camera.Ypos;
+
+			this.drawHexagon(hexPosX, hexPosY, this.size, this.Color);
         	this.drawHexagonData(hexPosX, hexPosY);
         }
     };
