@@ -1,19 +1,37 @@
 var game_core = function() {
 
 	//Delta Values
-	var dPosition = 2;
+	var dPosition = 1;
 	var dZoom = 0.1;
 	var dRotation = 3;
 
 	//Game properties
 	var zoom = 1;
-	var WIDTH =  800;
-	var HEIGHT = 600;
+	var WIDTH =  1200;
+	var HEIGHT = 800;
 	var rotation = 0;
-	var boardSizeX = 20;
-	var boardSizeY = 20;
-	var viewDistance = 150;
+	var boardSizeX = 40;
+	var boardSizeY = 40;
+	var viewDistance = 250;
 	var Fields = [];
+
+//Main loop
+	function init() {
+		canvas = document.getElementById("viewport");
+		ctx = canvas.getContext("2d");
+		return setInterval(draw, 10);
+	};
+
+
+//Command Draw functions
+	function draw() {
+		clearCanvas();
+		ctx.fillStyle = "lightgrey"; // background color
+		rect(0,0,WIDTH,HEIGHT); // background color painting.
+		drawBoardFields();  //draws fields on the map
+		camera.draw(); // draws camera in middle of canvas
+		drawDevData();	//draws data on upper left side of canvas
+	};
 
 	function clearCanvas() {
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -30,25 +48,6 @@ var game_core = function() {
 		ctx.closePath();
 		ctx.fill();
 		ctx.stroke();
-	};
-
-    //Main loop
-	function init() {
-		canvas = document.getElementById("viewport");
-		ctx = canvas.getContext("2d");
-		return setInterval(draw, 10);
-	};
-
-
-//Draw functions
-	function draw() {
-		clearCanvas();
-		ctx.fillStyle = "lightgrey"; // background color
-		rect(0,0,WIDTH,HEIGHT); // background color painting.
-		drawBoardFields();  //draws fields on the map
-		camera.draw(); // draws camera in middle of canvas
-		showCoords(); // draws camera game pos 
-		drawDevData();	//draws data on upper left side of canvas
 	};
 
     function drawDevData() {
@@ -71,14 +70,12 @@ var game_core = function() {
         ctx.fillStyle = "#000000";
         ctx.font = "10pt Arial";
         ctx.fillText("Move around on: WASDZXQE ", 5, 65);
-    }
 
-	function showCoords() {
 		ctx.stroke();
         ctx.fillStyle = "#000000";
-        ctx.font = "10pt Arial";
+        ctx.font = "6pt Arial";
         ctx.fillText(camera.Xpos + "," + camera.Ypos, WIDTH/2,  HEIGHT/2+20);
-	};
+    }
 
 	function drawBoardFields() {
 		for (var i = 0; i < Fields[0].length; i++) {
@@ -126,6 +123,7 @@ var game_core = function() {
 	window.addEventListener('keydown',doKeyDown,true);
 	window.addEventListener('onClick', onClick, true);
 
+//Field / Hexagon data
  	var Field = (function () {
         function Field(x, y, color) {
             this.Xpos = x;
@@ -143,16 +141,16 @@ var game_core = function() {
         Fields[x] = [];
         for (var y = 0; y < boardSizeY; ++y) {
         	if ((y % 2) == 0 && (x % 2) == 0) {
-            	Fields[x][y] = new Field(x, y, "yellow");
+            	Fields[x][y] = new Field(x, y, "green");
         	}
         	if ((y % 2) == 0 && (x % 2) == 1) {
-            	Fields[x][y] = new Field(x, y, "orange");
+            	Fields[x][y] = new Field(x, y, "green");
         	} 
         	if ((y % 2) == 1 && (x % 2) == 0) {
-        		Fields[x][y] = new Field(x, y, "yellow");
+        		Fields[x][y] = new Field(x, y, "grey");
         	}
         	if ((y % 2) == 1 && (x % 2) == 1) {
-        		Fields[x][y] = new Field(x, y, "orange");
+        		Fields[x][y] = new Field(x, y, "green");
         	}
         }
     };
@@ -223,6 +221,6 @@ var game_core = function() {
 
     Camera.prototype.draw = function () {
 		ctx.fillStyle = this.Color;
-		circle(WIDTH/2, HEIGHT/2, 4 * zoom);
+		circle(WIDTH/2, HEIGHT/2, 1 * zoom);
     };
 };
